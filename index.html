@@ -9,11 +9,8 @@
     <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
     <script src="js/todos.js"></script>
   </head>
-
   <body>
-
     <!-- Todo App Interface -->
-
     <div id="todoapp">
       <div class="title">
         <h1>Parse Todos</h1>
@@ -59,7 +56,8 @@
       <div class="section">
 
         <header id="header">
-          <input id="new-todo" placeholder="What needs to be done?" type="text" />
+          <input id="new-todo" placeholder="Qual'è il nome del farmaco?" type="text" />
+          <input id="new-todo2" placeholder="Data scadenza" type="text"/>
         </header>
 
         <div id="main">
@@ -80,6 +78,7 @@
 	<div class="view">
 	  <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %>>
 	  <label class="todo-content"><%= _.escape(content) %></label>
+      <span>prova</span>
 	  <button class="todo-destroy"></button>
 	</div>
 	<input class="edit" value="<%= _.escape(content) %>">
