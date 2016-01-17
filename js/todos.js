@@ -1,3 +1,13 @@
+window.fmt = {
+    iso_date: function(d) {
+        // Your favorite ISO 8601 date formatter goes here, this
+        // is just a quick hack (which won't work in older IEs)
+        // for demonstration purposes.
+        return d.iso.replace(/T.*$/, '');
+    }
+    // Any other formatting functions you need go here...
+};
+
 // An example Parse.js Backbone application based on the todo app by
 // [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses Parse to persist
 // the todo items and provide user authentication and sessions.
@@ -7,8 +17,8 @@ $(function() {
   Parse.$ = jQuery;
 
   // Initialize Parse with your Parse application javascript keys
-  Parse.initialize("your-application-id",
-                   "your-javascript-key");
+  Parse.initialize("9ev3LLNtTlEmBe0Cxlb8p2xpk9wqi5M2XIJAxkIk",
+                   "MVjwm8Orinuz1xb0H6rGkeJ8oEaCISxu7J9bM0ZY");
 
   // Todo Model
   // ----------
@@ -17,6 +27,7 @@ $(function() {
   var Todo = Parse.Object.extend("Todo", {
     // Default attributes for the todo.
     defaults: {
+      outdate: new Date(),
       content: "empty todo...",
       done: false
     },
@@ -24,7 +35,7 @@ $(function() {
     // Ensure that each todo created has `content`.
     initialize: function() {
       if (!this.get("content")) {
-        this.set({"content": this.defaults.content});
+        this.set({"content": this.defaults.content, outdate: new Date()});
       }
     },
 
@@ -151,6 +162,7 @@ $(function() {
     // Delegated events for creating new items, and clearing completed ones.
     events: {
       "keypress #new-todo":  "createOnEnter",
+      "keypress #new-todo2": "createOnEnter",
       "click #clear-completed": "clearCompleted",
       "click #toggle-all": "toggleAllComplete",
       "click .log-out": "logOut",
@@ -171,6 +183,7 @@ $(function() {
       this.$el.html(_.template($("#manage-todos-template").html()));
       
       this.input = this.$("#new-todo");
+      this.outdate = this.$("#new-todo2");
       this.allCheckbox = this.$("#toggle-all")[0];
 
       // Create our collection of Todos
@@ -187,7 +200,9 @@ $(function() {
       // Fetch all the todo items for this user
       this.todos.fetch();
 
-      state.on("change", this.filter, this);
+        $( ".datepicker" ).datepicker();
+
+        state.on("change", this.filter, this);
     },
 
     // Logs out the user and shows the login view
@@ -270,6 +285,7 @@ $(function() {
 
       this.todos.create({
         content: this.input.val(),
+        outdate: new Date(this.outdate.val()),
         order:   this.todos.nextOrder(),
         done:    false,
         user:    Parse.User.current(),
