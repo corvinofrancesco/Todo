@@ -1,12 +1,15 @@
+var FORMAT_DATE = "dd MM yy";
 window.fmt = {
     iso_date: function(d) {
         // Your favorite ISO 8601 date formatter goes here, this
         // is just a quick hack (which won't work in older IEs)
         // for demonstration purposes.
-        return d.iso.replace(/T.*$/, '');
+        return $.datepicker.formatDate( FORMAT_DATE, new Date(d.iso));
+       // return d.iso.replace(/T.*$/, '');
     }
     // Any other formatting functions you need go here...
 };
+$.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
 
 // An example Parse.js Backbone application based on the todo app by
 // [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses Parse to persist
@@ -99,10 +102,10 @@ $(function() {
     // The DOM events specific to an item.
     events: {
       "click .toggle"              : "toggleDone",
-      "dblclick label.todo-content" : "edit",
+      "dblclick label" : "edit",
       "click .todo-destroy"   : "clear",
       "keypress .edit"      : "updateOnEnter",
-      "blur .edit"          : "close"
+      "click #save"          : "close"
     },
 
     // The TodoView listens for changes to its model, re-rendering. Since there's
@@ -117,7 +120,11 @@ $(function() {
     // Re-render the contents of the todo item.
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
-      this.input = this.$('.edit');
+      this.input = this.$('#content');
+        var datepickerObjectId = "#datepicker" + this.model.toJSON().objectId;
+        //alert(datepickerObjectId + JSON.stringify(this.model));
+        this.outdate = this.$(datepickerObjectId);
+        $(this.el).find(datepickerObjectId).datepicker({dateFormat: FORMAT_DATE});
       return this;
     },
 
@@ -134,7 +141,11 @@ $(function() {
 
     // Close the `"editing"` mode, saving changes to the todo.
     close: function() {
-      this.model.save({content: this.input.val()});
+      var parsedDate = $.datepicker.parseDate(FORMAT_DATE,this.outdate.val());
+      this.model.save({
+          content: this.input.val(),
+          outdate: parsedDate
+      });
       $(this.el).removeClass("editing");
     },
 
@@ -200,7 +211,7 @@ $(function() {
       // Fetch all the todo items for this user
       this.todos.fetch();
 
-        $( ".datepicker" ).datepicker();
+        $( ".datepicker" ).datepicker({dateFormat: FORMAT_DATE});
 
         state.on("change", this.filter, this);
     },
@@ -283,9 +294,10 @@ $(function() {
       var self = this;
       if (e.keyCode != 13) return;
 
+      var parsedDate = $.datepicker.parseDate(FORMAT_DATE,this.outdate.val());
       this.todos.create({
         content: this.input.val(),
-        outdate: new Date(this.outdate.val()),
+        outdate: parsedDate,
         order:   this.todos.nextOrder(),
         done:    false,
         user:    Parse.User.current(),
