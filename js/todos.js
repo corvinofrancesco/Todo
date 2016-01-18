@@ -9,6 +9,11 @@ window.fmt = {
     }
     // Any other formatting functions you need go here...
 };
+
+function checkDate (d){
+    return (new Date(d.iso)) < new Date();
+};
+
 $.datepicker.setDefaults( $.datepicker.regional[ "it" ] );
 
 // An example Parse.js Backbone application based on the todo app by
@@ -121,10 +126,13 @@ $(function() {
     render: function() {
       $(this.el).html(this.template(this.model.toJSON()));
       this.input = this.$('#content');
-        var datepickerObjectId = "#datepicker" + this.model.toJSON().objectId;
-        //alert(datepickerObjectId + JSON.stringify(this.model));
-        this.outdate = this.$(datepickerObjectId);
-        $(this.el).find(datepickerObjectId).datepicker({dateFormat: FORMAT_DATE});
+
+      var objectId = this.model.toJSON().objectId;
+      var datepickerObjectId = "#datepicker" + objectId;
+
+      //alert(datepickerObjectId + JSON.stringify(this.model));
+      this.outdate = this.$(datepickerObjectId);
+      this.$(datepickerObjectId).datepicker({dateFormat: FORMAT_DATE});
       return this;
     },
 
@@ -305,6 +313,7 @@ $(function() {
       });
 
       this.input.val('');
+      this.outdate.val('');
       this.resetFilters();
     },
 

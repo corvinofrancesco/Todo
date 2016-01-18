@@ -79,14 +79,14 @@
 
     <script type="text/template" id="item-template">
       <li class="<%= done ? 'completed' : '' %>">
-	<div class="view">
+	<div class="view <%= checkDate(outdate)?'outdate':'' %>">
 	  <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %>>
 	  <label class="todo-content"><%= _.escape(content) %></label>
       <label class="todo-outdate"><%= fmt.iso_date(outdate) %></label>
 	  <button class="todo-destroy"></button>
 	</div>
 	<input id="content" class="edit" value="<%= _.escape(content) %>">
-    <input id="datepicker<%= objectId%>" class="edit" value="<%= fmt.iso_date(outdate) %>" >
+    <input id="datepicker<%= this.model.toJSON().objectId %>" class="edit" value="<%= fmt.iso_date(outdate) %>" >
     <button id="save" class="edit">Salva</button>
       </li>
     </script>
