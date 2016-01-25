@@ -303,14 +303,17 @@ $(function() {
       if (e.keyCode != 13) return;
 
       var parsedDate = $.datepicker.parseDate(FORMAT_DATE,this.outdate.val());
-      this.todos.create({
+      var justCreated = this.todos.create({
         content: this.input.val(),
         outdate: parsedDate,
         order:   this.todos.nextOrder(),
         done:    false,
         user:    Parse.User.current(),
         ACL:     new Parse.ACL(Parse.User.current())
-      });
+      },{ success: function(obj){ // una volta creato aggiorna la lista
+          justCreated.objectId = obj.objectId;
+          self.addAll();
+      }});
 
       this.input.val('');
       this.outdate.val('');
